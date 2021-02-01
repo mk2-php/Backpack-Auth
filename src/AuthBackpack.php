@@ -119,8 +119,6 @@ class AuthBackpack extends Backpack{
             return false;
         }
 
-        unset($res->{$this->colum["password"]});
-
         $this->_setAuthData($res);
 
         return true;
@@ -233,8 +231,24 @@ class AuthBackpack extends Backpack{
     }
 
     /**
+     * addAuth
+     * @param $name
+     * @param $value
+     */
+    public function addAuth($name,$value){
+
+        $getAuth=$this->getAuth();
+
+        $getAuth[$name]=$value;
+
+        $this->Backpack->{$this->altanativeSession}->write($this->name,$getAuth);
+
+        return $this;
+    }
+
+    /**
      * getPasswordHash
-     * @params $passwordd
+     * @param $passwordd
      */
     public function getPasswordHash($password){
 
@@ -248,6 +262,10 @@ class AuthBackpack extends Backpack{
 
     }
 
+    /**
+     * _makeToken
+     * @param $logined
+     */
     private function _makeToken($logined){
         $hash=$logined.$this->name;
         $hash=$this->Backpack->{$this->altanativeEncrypt}
@@ -257,6 +275,8 @@ class AuthBackpack extends Backpack{
     }
     
     private function _setAuthData($data){
+
+        unset($data->{$this->colum["password"]});
 
         $logined=date_format(date_create("now"),"Y-m-d H:i:s");
 
