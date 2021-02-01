@@ -121,15 +121,70 @@ class AuthBackpack extends Backpack{
 
         unset($res->{$this->colum["password"]});
 
-        $logined=date_format(date_create("now"),"Y-m-d H:i:s");
-
-        $res->{$this->loginedDateName}=$logined;
-        $res->{$this->tokenName}=$this->_makeToken($logined);
-
-        $this->Backpack->{$this->altanativeSession}->changeSSID();
-        $this->Backpack->{$this->altanativeSession}->write($this->name,$res);
+        $this->_setAuthData($res);
 
         return true;
+    
+    }
+
+    /**
+     * fprceLogin
+     * @param $username 
+     */
+    public function forceLogin($username){
+
+        $obj=$this->Table->{$this->table}->select()
+            ->where($this->colum["username"],"=",$username)
+        ;
+
+        if(is_array($this->where)){
+            foreach($this->where as $w_){
+                $obj->where(...$w_);
+            }
+        }
+
+        $res=$obj->first()->row();
+
+        if(!$res){
+            return false;
+        }
+
+        $this->_setAuthData($res);
+
+        return true;
+
+    }
+
+    /**
+     * refresh
+     */
+    public function refresh(){
+
+        $username=$this->getAuth($this->colum["username"]);
+        if(!$username){
+            return false;
+        }
+
+        $obj=$this->Table->{$this->table}->select()
+            ->where($this->colum["username"],"=",$username)
+        ;
+
+        if(is_array($this->where)){
+            foreach($this->where as $w_){
+                $obj->where(...$w_);
+            }
+        }
+
+        $res=$obj->first()->row();
+
+        if(!$res){
+            return false;
+        }
+
+        $this->_setAuthData($res);
+
+        return true;
+
     }
 
     /**
@@ -201,4 +256,15 @@ class AuthBackpack extends Backpack{
         return $hash;
     }
     
+    private function _setAuthData($data){
+
+        $logined=date_format(date_create("now"),"Y-m-d H:i:s");
+
+        $data->{$this->loginedDateName}=$logined;
+        $data->{$this->tokenName}=$this->_makeToken($logined);
+
+        $this->Backpack->{$this->altanativeSession}->changeSSID();
+        $this->Backpack->{$this->altanativeSession}->write($this->name,$data);
+
+    }
 }
