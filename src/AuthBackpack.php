@@ -100,7 +100,12 @@ class AuthBackpack extends Backpack{
         $username=$post[$this->colum["username"]];
         $password=$post[$this->colum["password"]];
 
-        $password=$this->getPasswordHash($password);
+        if(method_exists($this,"passwordLogic")){
+            $password=$this->passwordLogic($password);
+        }
+        else{
+            $password=$this->getPasswordHash($password);
+        }
 
         $obj=$this->Table->{$this->table}->select()
             ->where($this->colum["username"],"=",$username)
