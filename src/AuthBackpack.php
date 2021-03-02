@@ -38,17 +38,15 @@ class AuthBackpack extends Backpack{
     public $loginedDateName="__logined";
 
 	/**
-	 * __construct
+	 * handleBefore
 	 */
-	public function __construct(){
-		parent::__construct();
+	public function handleBefore(){
 		
         $this->Backpack->load([
             $this->altanativeEncrypt,
             $this->altanativeSession,
         ]);
         $this->Table->load($this->table);
-
     }
 
     /**
