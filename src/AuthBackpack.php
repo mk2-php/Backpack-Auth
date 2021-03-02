@@ -10,6 +10,8 @@ class AuthBackpack extends Backpack{
     private $allPageAllow=false;
     private $allowPages=null;
 
+    public $sessionSave=true;
+
     public $name="userAuthority";
 
     public $table="User";
@@ -45,7 +47,7 @@ class AuthBackpack extends Backpack{
             $this->altanativeEncrypt,
             $this->altanativeSession,
         ]);
-       $this->Table->load($this->table);
+        $this->Table->load($this->table);
 
     }
 
@@ -124,10 +126,11 @@ class AuthBackpack extends Backpack{
             return false;
         }
 
-        $this->_setAuthData($res);
+        if($this->sessionSave){
+            $this->_setAuthData($res);
+        }
 
-        return true;
-    
+        return true;    
     }
 
     /**
@@ -292,4 +295,5 @@ class AuthBackpack extends Backpack{
         $this->Backpack->{$this->altanativeSession}->write($this->name,$data);
 
     }
+    
 }
