@@ -118,17 +118,22 @@ class AuthBackpack extends Backpack{
             }
         }
 
-        $res=$obj->first()->row();
+        $res=$obj->first();
 
-        if(!$res){
+        if(!$res->row()){
             return false;
         }
 
         if($this->sessionSave){
-            $this->_setAuthData($res);
+            $this->_setAuthData($res->row());
+            return true;    
+        }
+        else{
+            $res=$res->toArray();
+            unset($res[$this->colum["password"]]);
+            return $res;
         }
 
-        return true;    
     }
 
     /**
