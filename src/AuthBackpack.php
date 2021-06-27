@@ -84,6 +84,7 @@ class AuthBackpack extends Backpack{
         }
 
         if(!$jugement){
+            $this->logout();
             $this->Response->redirect($redirectUrl);
         }
 
